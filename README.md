@@ -1,6 +1,6 @@
 # IBNR Calculator
 
-A lightweight .NET 8 console utility that mirrors the essential chain-ladder workflow seen in tools like WTW ResQ. It can ingest claim transactions from an Access database, build triangles at different origin and development grains, and calculate ultimates/IBNR with selectable link ratios.
+A lightweight .NET 10 console utility that mirrors the essential chain-ladder workflow seen in tools like WTW ResQ. It can ingest claim transactions from an Access database, build triangles at different origin and development grains, and calculate ultimates/IBNR with selectable link ratios. A WPF/XAML template is included to host these capabilities in a desktop UI.
 
 ## Features
 - Load transactions from an Access database (or the bundled sample data for quick demos).
@@ -43,6 +43,10 @@ dotnet run -- --sample --origin accident --origin-grain year --development-month
 - Incremental and cumulative triangles with the chosen grains.
 - Selected link ratios per development step (reflecting any exclusions).
 - Origin-level latest cumulative, projected ultimate, and IBNR.
+
+## WPF template
+- A ready-to-bind XAML shell lives at `templates/MainWindow.xaml`. Its `DataContext` targets `ReservingViewModel`, which already orchestrates loading Access data (including column overrides and custom date formats), building triangles, and calculating chain-ladder ultimates.
+- Bind the template into a WPF application by copying the XAML and code-behind, keeping the `IBNRCalculator.ViewModels` namespace available. The `Calculate` button triggers `RunCommand`, which pulls the user-specified mappings, date format, origin/development selections, and allowed link-ratio steps before updating the on-screen grids.
 
 ## Extending
 The code is organized into small calculation and data source components (`src/Calculations` and `src/Services`) so you can plug in alternate data sources or add more reserving methods alongside the chain ladder implementation.
