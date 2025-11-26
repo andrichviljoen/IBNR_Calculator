@@ -16,7 +16,8 @@ internal record CliOptions(
     string AccidentColumn,
     string UnderwritingColumn,
     string PaymentColumn,
-    string AmountColumn);
+    string AmountColumn,
+    string? DateFormat);
 
 internal class App
 {
@@ -37,7 +38,8 @@ internal class App
                 options.AccidentColumn,
                 options.UnderwritingColumn,
                 options.PaymentColumn,
-                options.AmountColumn);
+                options.AmountColumn,
+                options.DateFormat);
 
         var transactions = await source.LoadAsync();
         var triangle = TriangleBuilder.Build(transactions, options.OriginType, options.OriginGrain, options.DevelopmentMonths);
@@ -65,6 +67,7 @@ internal class App
         string underwritingColumn = "UnderwritingDate";
         string paymentColumn = "PaymentDate";
         string amountColumn = "IncrementalPaid";
+        string? dateFormat = null;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -106,6 +109,9 @@ internal class App
                 case "--amount-column":
                     amountColumn = args[++i];
                     break;
+                case "--date-format":
+                    dateFormat = args[++i];
+                    break;
                 default:
                     throw new ArgumentException($"Unknown argument {args[i]}");
             }
@@ -116,7 +122,7 @@ internal class App
             throw new ArgumentException("--database is required unless --sample is passed");
         }
 
-        return new CliOptions(databasePath, tableName, useSample, originType, originGrain, developmentMonths, allowedSteps, accidentColumn, underwritingColumn, paymentColumn, amountColumn);
+        return new CliOptions(databasePath, tableName, useSample, originType, originGrain, developmentMonths, allowedSteps, accidentColumn, underwritingColumn, paymentColumn, amountColumn, dateFormat);
     }
 
     private static OriginType ParseOriginType(string value) => value.ToLowerInvariant() switch
@@ -199,6 +205,7 @@ internal class App
         Console.WriteLine("  --underwriting-column <name>Override column name for underwriting date (default: UnderwritingDate)");
         Console.WriteLine("  --payment-column <name>     Override column name for payment date (default: PaymentDate)");
         Console.WriteLine("  --amount-column <name>      Override column name for incremental paid amount (default: IncrementalPaid)");
+        Console.WriteLine("  --date-format <format>      Parse Access date columns using the supplied format (e.g. yyyyMMdd or yyyyQQ)");
         Console.WriteLine("  --sample                    Use bundled synthetic data instead of an Access database");
         Console.WriteLine("  --help                      Show this help");
     }

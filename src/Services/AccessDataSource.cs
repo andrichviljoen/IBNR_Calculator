@@ -11,7 +11,8 @@ public class AccessDataSource : ITransactionSource
         string accidentColumn = "AccidentDate",
         string underwritingColumn = "UnderwritingDate",
         string paymentColumn = "PaymentDate",
-        string amountColumn = "IncrementalPaid")
+        string amountColumn = "IncrementalPaid",
+        string? dateFormat = null)
     {
         DatabasePath = databasePath;
         TableName = tableName;
@@ -19,6 +20,7 @@ public class AccessDataSource : ITransactionSource
         UnderwritingColumn = underwritingColumn;
         PaymentColumn = paymentColumn;
         AmountColumn = amountColumn;
+        DateFormat = dateFormat;
     }
 
     public string DatabasePath { get; }
@@ -27,6 +29,7 @@ public class AccessDataSource : ITransactionSource
     public string UnderwritingColumn { get; }
     public string PaymentColumn { get; }
     public string AmountColumn { get; }
+    public string? DateFormat { get; }
 
     public async Task<IReadOnlyCollection<ClaimTransaction>> LoadAsync()
     {
@@ -41,13 +44,47 @@ public class AccessDataSource : ITransactionSource
 
         while (reader != null && await reader.ReadAsync())
         {
-            var accidentDate = reader.GetDateTime(0);
-            var underwritingDate = reader.GetDateTime(1);
-            var paymentDate = reader.GetDateTime(2);
+            var accidentDate = ParseDate(reader[0]);
+            var underwritingDate = ParseDate(reader[1]);
+            var paymentDate = ParseDate(reader[2]);
             var incrementalPaid = reader.GetDecimal(3);
             results.Add(new ClaimTransaction(accidentDate, underwritingDate, paymentDate, incrementalPaid));
         }
 
         return results;
+    }
+
+    private DateTime ParseDate(object value)
+    {
+        if (value is DateTime dt)
+        {
+            return dt.Date;
+        }
+
+        if (DateFormat is not null)
+        {
+            var text = Convert.ToString(value)?.Trim();
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new FormatException("Encountered a blank date value when a format was supplied.");
+            }
+
+            if (DateFormat.Equals("yyyyQQ", StringComparison.OrdinalIgnoreCase) && text!.Length == 6)
+            {
+                var year = int.Parse(text.Substring(0, 4));
+                var quarter = int.Parse(text.Substring(4, 2));
+                if (quarter is < 1 or > 4)
+                {
+                    throw new FormatException($"Quarter value '{quarter}' must be between 1 and 4.");
+                }
+
+                var month = (quarter - 1) * 3 + 1;
+                return new DateTime(year, month, 1);
+            }
+
+            return DateTime.ParseExact(text!, DateFormat, null);
+        }
+
+        return Convert.ToDateTime(value);
     }
 }

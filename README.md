@@ -10,10 +10,10 @@ A lightweight .NET 8 console utility that mirrors the essential chain-ladder wor
 - Compute chain-ladder ultimates and IBNR per origin with the ability to include/exclude individual development link ratios.
 
 ## Expected data shape
-The Access table should expose the following columns (names are configurable through CLI flags):
-- `AccidentDate` (date)
-- `UnderwritingDate` (date)
-- `PaymentDate` (date)
+The Access table should expose the following logical fields (map them to your column names with CLI flags):
+- `AccidentDate` (date/text)
+- `UnderwritingDate` (date/text)
+- `PaymentDate` (date/text)
 - `IncrementalPaid` (numeric/decimal)
 
 ## Running the tool
@@ -22,7 +22,9 @@ The Access table should expose the following columns (names are configurable thr
 ```bash
 # From the repository root
 # Using an Access database
-# dotnet run -- --database /path/to/data.accdb --table Claims --origin accident --origin-grain year --development-months 12
+# dotnet run -- --database /path/to/data.accdb --table Claims --origin accident --origin-grain year --development-months 12 \
+#   --accident-column AY --underwriting-column UW --payment-column PaidDate --amount-column Payment \
+#   --date-format yyyyQQ   # example of parsing a text quarter code like 200601 => 2006-01-01
 
 # With bundled sample data (no Access database required)
 dotnet run -- --sample --origin accident --origin-grain year --development-months 12
@@ -34,6 +36,7 @@ dotnet run -- --sample --origin accident --origin-grain year --development-month
 - `--development-months <n>`: set development period size.
 - `--use-steps <list>`: comma-separated development step indices (e.g. `0,1,2`) to include in the IBNR projection. Steps not listed are treated as neutral (factor of 1).
 - Column overrides: `--accident-column`, `--underwriting-column`, `--payment-column`, `--amount-column`.
+- `--date-format <pattern>`: interpret Access date columns using the supplied pattern (e.g. `yyyyMMdd` or `yyyyQQ` where `200601` is parsed as 2006 Q1).
 - `--sample`: run with bundled synthetic data.
 
 ### Output
