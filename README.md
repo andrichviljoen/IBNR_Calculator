@@ -62,7 +62,8 @@ The Access table should expose the following logical fields (map them to your co
 1) **Open the project**
    - Clone the repository and open `IBNRCalculator.csproj` in Visual Studio 2022 (17.10+) or newer with .NET 10 installed.
 2) **Restore and build**
-   - Visual Studio performs package restore automatically when you build or run. If you want to force it first, right-click the solution and choose **Restore NuGet Packages** (or run `dotnet restore`).
+   - Visual Studio performs package restore automatically when you build or run. The project also triggers a restore if `project.assets.json` is missing, so normal builds should recover from missing packages without extra steps.
+   - If you want to force restore first, right-click the solution and choose **Restore NuGet Packages** (or run `dotnet restore`).
    - Build with `Build > Build Solution` (or `Ctrl+Shift+B`).
 3) **Run the WPF UI (default)**
    - Set `IBNRCalculator` as the startup project.

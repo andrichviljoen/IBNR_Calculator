@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <Target Name="RestoreOnBuild" BeforeTargets="PrepareForBuild" Condition="!Exists('$(BaseIntermediateOutputPath)project.assets.json')">
+    <Message Text="Restoring NuGet packages because project.assets.json is missing." Importance="high" />
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Restore" BuildInParallel="false" />
+  </Target>
 </Project>
