@@ -74,3 +74,35 @@ The Access table should expose the following logical fields (map them to your co
 
 ## Extending
 The code is organized into small calculation and data source components (`src/Calculations` and `src/Services`) so you can plug in alternate data sources or add more reserving methods alongside the chain ladder implementation.
+
+## How it works (conceptual guide)
+- **Data ingestion:** The app reads claim transactions from either the Access file you choose or a bundled synthetic dataset. You can point each logical field (accident, underwriting, payment date, and incremental paid) at the Access column that holds that value. Custom date formats (e.g., `yyyyMMdd` or `yyyyQQ`) normalize text dates into real dates.
+- **Period setup:** Pick the origin basis (accident or underwriting) and the aggregation grain (years or quarters). Choose development period length in months (e.g., 12 for annual dev steps or 3 for quarterly).
+- **Triangle construction:** The selected periods are translated into incremental and cumulative paid triangles. Origin rows respect your chosen origin basis and grain; development columns follow the selected development-month step size.
+- **Chain-ladder projection:** Link ratios are calculated for each development step. You can deselect steps you do not want included—those steps are treated as a factor of 1.0 so they do not influence the projection.
+- **Results:** The UI and console both display the latest cumulative paid, projected ultimate, and IBNR per origin period, plus the link ratios that were used.
+
+## Installation and first run
+1) **Install prerequisites**
+   - Windows with the Microsoft Access Database Engine (ACE) if you plan to read Access files. If ACE is missing, install the [Access Database Engine redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=54920).
+   - .NET 10 SDK (or newer) for building and running `dotnet` projects.
+2) **Clone the repository**
+   ```bash
+   git clone https://github.com/andrichviljoen/IBNR_Calculator.git
+   cd IBNR_Calculator
+   ```
+3) **Restore packages (automatic or manual)**
+   - The project will automatically run `dotnet restore` if `obj/project.assets.json` is missing. You can also run it explicitly:
+   ```bash
+   dotnet restore
+   ```
+4) **Build and launch the UI**
+   ```bash
+   dotnet run
+   ```
+   This restores (if needed), builds, and opens the WPF window. Supply optional flags after `--` (e.g., `dotnet run -- --sample`).
+5) **Configure and calculate**
+   - Browse to your Access database and table, map the four logical fields, and specify the date format if your dates are stored as text. Choose accident/underwriting origin, origin grain, development months, and any link-ratio exclusions, then click **Calculate** to view the triangles and IBNR results.
+
+## Running the console flow directly
+If you prefer terminal output or need to automate runs, pass `--console` to `dotnet run` along with your source and option flags (database path, table name, column mappings, date format, origin/development configuration, and optional `--use-steps`). The console produces the same link ratios, triangles, and IBNR table shown in the UI.
