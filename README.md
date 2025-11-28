@@ -66,6 +66,9 @@ dotnet publish IBNRCalculator.csproj -p:PublishProfile=Properties/PublishProfile
 
 The executable will be located at `bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/IBNRCalculator.exe`. Double-click the EXE to launch the WPF UI, or run it from PowerShell to use the `--console` path.
 
+> **PowerShell execution policy**
+> If your system blocks unsigned scripts, run `publish-win.cmd` (which internally sets `-ExecutionPolicy Bypass`) or open PowerShell and execute `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` before running `publish-win.ps1`. You can also unblock the file via `Unblock-File .\\publish-win.ps1`.
+
 ## WPF experience
 - `App.xaml` starts the WPF window by default; use `--console` if you want the command-line output instead.
 - `MainWindow.xaml` binds directly to `ReservingViewModel`, which orchestrates loading Access data (including column overrides and custom date formats), building triangles, and calculating chain-ladder ultimates.
