@@ -24,5 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+    <Reference Include="System.Data.OleDb" />
   </ItemGroup>
 </Project>
