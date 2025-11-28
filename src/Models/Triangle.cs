@@ -31,7 +31,7 @@ public class Triangle
                         var previous = dict.Count == 0 ? 0m : dict.Values.Last();
                         dict[cell.Key] = previous + cell.Value;
                         return dict;
-                    }));
+                    })));
 
     public IEnumerable<string> OrderedOrigins =>
         Incremental.Keys.OrderBy(k => k);
