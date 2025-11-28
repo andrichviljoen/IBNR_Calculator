@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <Target Name="RestoreOnBuild" BeforeTargets="PrepareForBuild" Condition="!Exists('$(BaseIntermediateOutputPath)project.assets.json')">
+    <Message Text="Restoring NuGet packages because project.assets.json is missing." Importance="high" />
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Restore" BuildInParallel="false" />
+  </Target>
+
+  <ItemGroup>
+    <Page Remove="templates\MainWindow.xaml" />
+    <Compile Remove="templates\MainWindow.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="templates\MainWindow.xaml" />
+    <None Include="templates\MainWindow.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+    <Reference Include="System.Data.OleDb" />
+  </ItemGroup>
+</Project>
