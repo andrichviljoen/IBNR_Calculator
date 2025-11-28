@@ -53,6 +53,19 @@ The Access table should expose the following logical fields (map them to your co
 - Selected link ratios per development step (reflecting any exclusions).
 - Origin-level latest cumulative, projected ultimate, and IBNR.
 
+### Create a Windows executable
+If you prefer to distribute or run the app without the .NET runtime installed, publish a self-contained EXE:
+
+```powershell
+# From the repository root
+powershell -ExecutionPolicy Bypass -File .\publish-win.ps1
+
+# Or call dotnet publish directly
+dotnet publish IBNRCalculator.csproj -p:PublishProfile=Properties/PublishProfiles/Win-x64.pubxml -c Release
+```
+
+The executable will be located at `bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/IBNRCalculator.exe`. Double-click the EXE to launch the WPF UI, or run it from PowerShell to use the `--console` path.
+
 ## WPF experience
 - `App.xaml` starts the WPF window by default; use `--console` if you want the command-line output instead.
 - `MainWindow.xaml` binds directly to `ReservingViewModel`, which orchestrates loading Access data (including column overrides and custom date formats), building triangles, and calculating chain-ladder ultimates.
