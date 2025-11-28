@@ -2,8 +2,7 @@ using IBNRCalculator.Calculations;
 using IBNRCalculator.Models;
 using IBNRCalculator.Services;
 
-var app = new App();
-await app.RunAsync(args);
+namespace IBNRCalculator;
 
 internal record CliOptions(
     string? DatabasePath,
@@ -19,7 +18,7 @@ internal record CliOptions(
     string AmountColumn,
     string? DateFormat);
 
-internal class App
+internal class CliRunner
 {
     public async Task RunAsync(string[] args)
     {
@@ -192,21 +191,20 @@ internal class App
     private static void PrintHelp()
     {
         Console.WriteLine("IBNR Calculator (chain ladder)");
-        Console.WriteLine("Usage: dotnet run -- --database <path> --table <table> [options]");
+        Console.WriteLine("Usage: dotnet run -- --console --database <path> --table <table> [options]");
         Console.WriteLine();
         Console.WriteLine("Options:");
         Console.WriteLine("  --database <path>           Path to the Access .mdb/.accdb file");
         Console.WriteLine("  --table <name>              Table containing transaction data (default: Claims)");
         Console.WriteLine("  --origin <accident|underwriting>   Origin basis (default: accident)");
-        Console.WriteLine("  --origin-grain <year|quarter>      Calendar grouping for origins (default: year)");
-        Console.WriteLine("  --development-months <n>    Number of months per development period (default: 12)");
-        Console.WriteLine("  --use-steps <list>          Comma-separated development step indices to include (e.g. 0,1,2)");
-        Console.WriteLine("  --accident-column <name>    Override column name for accident date (default: AccidentDate)");
-        Console.WriteLine("  --underwriting-column <name>Override column name for underwriting date (default: UnderwritingDate)");
-        Console.WriteLine("  --payment-column <name>     Override column name for payment date (default: PaymentDate)");
-        Console.WriteLine("  --amount-column <name>      Override column name for incremental paid amount (default: IncrementalPaid)");
-        Console.WriteLine("  --date-format <format>      Parse Access date columns using the supplied format (e.g. yyyyMMdd or yyyyQQ)");
-        Console.WriteLine("  --sample                    Use bundled synthetic data instead of an Access database");
-        Console.WriteLine("  --help                      Show this help");
+        Console.WriteLine("  --origin-grain <year|quarter>      Origin aggregation grain (default: year)");
+        Console.WriteLine("  --development-months <n>    Development period length in months (default: 12)");
+        Console.WriteLine("  --use-steps <list>          Comma-separated development steps to include (e.g., 0,1,2)");
+        Console.WriteLine("  --accident-column <name>    Column name for accident date");
+        Console.WriteLine("  --underwriting-column <name> Column name for underwriting date");
+        Console.WriteLine("  --payment-column <name>     Column name for payment date");
+        Console.WriteLine("  --amount-column <name>      Column name for incremental paid amount");
+        Console.WriteLine("  --date-format <pattern>     Optional date parsing format (supports quarter codes like yyyyQQ)");
+        Console.WriteLine("  --sample                    Use built-in sample transactions instead of Access data");
     }
 }
