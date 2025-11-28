@@ -21,4 +21,8 @@
     <None Include="templates\MainWindow.xaml" />
     <None Include="templates\MainWindow.xaml.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+  </ItemGroup>
 </Project>

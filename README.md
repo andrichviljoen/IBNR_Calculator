@@ -99,6 +99,7 @@ The code is organized into small calculation and data source components (`src/Ca
 1) **Install prerequisites**
    - Windows with the Microsoft Access Database Engine (ACE) if you plan to read Access files. If ACE is missing, install the [Access Database Engine redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=54920).
    - .NET 10 SDK (or newer) for building and running `dotnet` projects.
+   - NuGet restore access (the build pulls in the `System.Data.OleDb` package automatically when dependencies are restored).
 2) **Clone the repository**
    ```bash
    git clone https://github.com/andrichviljoen/IBNR_Calculator.git
